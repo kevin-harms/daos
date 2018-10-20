@@ -23,18 +23,6 @@ if [ -d /work ]; then
     export D_LOG_FILE=/work/daos.log
 fi
 
-lock_test()
-{
-    (
-        # clean up all files except the lock
-        flock 9
-        find /mnt/daos -maxdepth 1 -mindepth 1 \! -name jenkins.lock -print0 | \
-             xargs -0r rm -vrf
-        "$@" 2>&1 | grep -v "SUCCESS! NO TEST FAILURE"
-        exit "${PIPESTATUS[0]}"
-    ) 9>/mnt/daos/jenkins.lock
-}
-
 run_test()
 {
     # We use flock as a way of locking /mnt/daos so multiple runs can't hit it
@@ -45,18 +33,39 @@ run_test()
     #    before deciding this. Also, we intentionally leave off the last 'S'
     #    in that error message so that we don't guarantee printing that in
     #    every run's output, thereby making all tests here always pass.
-    time lock_test "$@"
-    EXIT_STATUS=${PIPESTATUS[0]}
-
-    if [ "${EXIT_STATUS}" -ne 0 ]; then
-        echo "Test $* failed with exit status ${EXIT_STATUS}."
+    if ! time "$@"; then
+        echo "Test $* failed with exit status ${PIPESTATUS[0]}."
         ((failed = failed + 1))
     fi
 }
 
+if [ "$1" = "--init" ]; then
+    INIT=true
+else
+    INIT=false
+fi
+
+if $INIT; then
+    sudo bash -c 'echo "1" > /proc/sys/kernel/sysrq'
+    if grep /mnt/daos\  /proc/mounts; then
+        sudo umount /mnt/daos
+    else
+        if [ ! -d /mnt/daos ]; then
+            sudo mkdir -p /mnt/daos
+        fi
+    fi
+    sudo mount -t tmpfs -o size=16G tmpfs /mnt/daos
+    df -h /mnt/daos
+    trap 'sudo umount /mnt/daos' EXIT
+fi
+
 if [ -d "/mnt/daos" ]; then
     # shellcheck disable=SC1091
     source ./.build_vars.sh
+    # fix up paths so they are relative to $PWD since we might not
+    # be in the same path as the software was built
+    SL_PREFIX=$PWD/${SL_PREFIX/*\/install/install}
+    SL_OMPI_PREFIX=$PWD/${SL_OMPI_PREFIX/*\/install/install}
     run_test "${SL_PREFIX}/bin/vos_tests" -A 500
     run_test "${SL_PREFIX}/bin/vos_tests" -n -A 500
     run_test src/common/tests/btree.sh ukey -s 20000
@@ -87,6 +96,7 @@ if [ -d "/mnt/daos" ]; then
         echo "SUCCESS! NO TEST FAILURES"
     else
         echo "FAILURE: $failed tests failed"
+        exit 1
     fi
 else
     echo "/mnt/daos isn't present for unit tests"
