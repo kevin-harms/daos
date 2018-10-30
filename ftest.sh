@@ -57,7 +57,7 @@ rm -rf src/tests/ftest/avocado ./*_results.xml
 mkdir -p src/tests/ftest/avocado/job-results
 
 # shellcheck disable=SC2154
-trap 'set +e
+trap 'set +ex
 restore_dist_files "${yaml_files[@]}"
 i=5
 # due to flakiness on wolf-53, try this several times
@@ -67,11 +67,15 @@ while [ $i -gt 0 ]; do
     while [ \$x -lt 30 ] &&
           grep $DAOS_BASE /proc/mounts &&
           ! sudo umount $DAOS_BASE; do
+        ps axf
         sleep 1
         let x+=1
     done
     sudo sed -i -e \"/added by ftest.sh/d\" /etc/fstab
-    sudo rmdir $DAOS_BASE" 2>&1 | dshbak -c
+    sudo rmdir $DAOS_BASE || (
+        rc=\${PIPESTATUS[0]}
+        find $DAOS_BASE || true
+        exit \$rc)" 2>&1 | dshbak -c
     if [ ${PIPESTATUS[0]} = 0 ]; then
         i=0
     fi

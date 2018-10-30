@@ -103,19 +103,25 @@ def runServer(hostfile, setname, basepath, uri_path=None, env_dict=None):
         fd = sessions[setname].stdout.fileno()
         fl = fcntl.fcntl(fd, fcntl.F_GETFL)
         fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
-        timeout = 600
+        timeout = 120
         start_time = time.time()
         result = 0
         pattern = "DAOS I/O server"
         expected_data = "Starting Servers\n"
+        i = 0
         while True:
+            i += 1
+            print "reading from stdout", i
             output = ""
             try:
                 output = sessions[setname].stdout.read()
             except IOError as excpn:
+                print "got exception:", excpn
                 if excpn.errno != errno.EAGAIN:
                     raise excpn
+                time.sleep(1)
                 continue
+            print "read {} from stdout".format(output)
             match = re.findall(pattern, output)
             expected_data += output
             result += len(match)
@@ -144,6 +150,7 @@ def runServer(hostfile, setname, basepath, uri_path=None, env_dict=None):
         except KeyError:
             pass
         raise ServerFailed("Server didn't start!")
+    print "Done starting server"
 
 def stopServer(setname=None, hosts=None):
     """

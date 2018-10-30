@@ -493,7 +493,7 @@ pipeline {
                     }
                     steps {
                         runTest stashes: [ 'CentOS-tests', 'CentOS-install', 'CentOS-build-vars' ],
-                                script: 'LD_LIBRARY_PATH=install/lib64:install/lib bash -x utils/run_test.sh --init',
+                                script: 'ls -l install/bin/; LD_LIBRARY_PATH=install/lib64:install/lib bash -x utils/run_test.sh --init && echo "run_test.sh exited successfully with ${PIPESTATUS[0]}" || echo "run_test.sh exited failure with ${PIPESTATUS[0]}"',
                               junit_files: null
                     }
                     post {
