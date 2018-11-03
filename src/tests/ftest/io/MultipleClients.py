@@ -26,6 +26,7 @@ import os
 import sys
 import json
 from avocado       import Test
+from avocado       import skip
 
 sys.path.append('./util')
 sys.path.append('../util')
@@ -78,6 +79,7 @@ class MultipleClients(Test):
         finally:
             ServerUtils.stopServer(hosts=self.hostlist_servers)
 
+    skip("Not building IOR")
     def test_multipleclients(self):
         """
         Test ID: DAOS-1263

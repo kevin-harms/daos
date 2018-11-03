@@ -26,6 +26,7 @@ import os
 import sys
 import json
 from avocado       import Test
+from avocado       import skip
 
 sys.path.append('./util')
 sys.path.append('../util')
@@ -140,6 +141,7 @@ class EightServers(Test):
             if expected_result != 'FAIL':
                 self.fail("Test was expected to pass but it failed.\n")
 
+    skip("We are not building IOR")
     def test_sequential(self):
         """
         Test ID: DAOS-1264
@@ -152,6 +154,7 @@ class EightServers(Test):
         ior_flags = self.params.get("F", '/run/ior/iorflags/sequential/')
         self.executable(ior_flags)
 
+    skip("We are not building IOR")
     def test_random(self):
         """
         Test ID: DAOS-1264

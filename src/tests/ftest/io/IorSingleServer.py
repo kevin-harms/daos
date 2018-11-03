@@ -27,6 +27,7 @@ import sys
 import json
 
 from avocado       import Test
+from avocado       import skip
 
 sys.path.append('./util')
 sys.path.append('../util')
@@ -79,6 +80,7 @@ class IorSingleServer(Test):
         finally:
             ServerUtils.stopServer(hosts=self.hostlist_servers)
 
+    skip("Not building IOR in tests")
     def test_singleserver(self):
         """
         Test IOR with Single Server config.

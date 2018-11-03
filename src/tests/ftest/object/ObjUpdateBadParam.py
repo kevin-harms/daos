@@ -81,6 +81,9 @@ class ObjUpdateBadParam(Test):
 
         :avocado: tags=object,objupdate,objbadhand,regression,vm,small
         """
+        saved_oh = None
+        container = None
+        pool = None
         try:
             # parameters used in pool create
             createmode = self.params.get("mode",'/run/conttests/createmode/')
@@ -129,11 +132,13 @@ class ObjUpdateBadParam(Test):
             self.fail("Test was expected to return a -1002 but it has not.\n")
 
         except DaosApiError as e:
-            container.oh = saved_oh
-            container.close()
-            container.destroy()
-            pool.disconnect()
-            pool.destroy(1)
+            if container:
+                container.oh = saved_oh
+                container.close()
+                container.destroy()
+            if pool:
+                pool.disconnect()
+                pool.destroy(1)
             self.pl.info("Test Complete")
             if not '-1002' in str(e):
                 print(e)

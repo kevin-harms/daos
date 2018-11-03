@@ -26,6 +26,7 @@ import sys
 import os
 import json
 import subprocess
+import errno
 from avocado import Test
 
 sys.path.append('../util')
@@ -91,6 +92,9 @@ class CartSelfTest(Test):
         try:
             os.remove(self.hostfile)
             os.remove(self.uri_file)
+        except OSError as excpn:
+            if excpn.errno != errno.ENOENT
+                raise
         finally:
             ServerUtils.stopServer(hosts=self.hostlist)
 

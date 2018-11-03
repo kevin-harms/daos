@@ -126,7 +126,7 @@ class MultiServerCreateDeleteTest(Test):
         try:
             cmd = ('{0} create-pool '
                    '-m {1} -u {2} -g {3} -s {4} -c 1'.format(
-                          self.daosctl, mode, uid, gid, setid, tgtlist))
+                          self.daosctl, mode, uid, gid, setid))
 
             uuid_str = """{0}""".format(process.system_output(cmd))
             print("uuid is {0}\n".format(uuid_str))

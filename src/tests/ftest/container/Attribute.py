@@ -51,7 +51,7 @@ def cb_func(event):
     GLOB_RC = event.event.ev_error
     GLOB_SIGNAL.set()
 
-def verify_list_attr(indata, size, buffer, mode="sync"):
+def verify_list_attr(indata, size, buf, mode="sync"):
     """
     verify the length of the Attribute names
     """
@@ -64,12 +64,12 @@ def verify_list_attr(indata, size, buffer, mode="sync"):
                             .format(length, size))
     #verify the Attributes names in list_attr retrieve
     for key in indata.keys():
-        if key not in buffer:
+        if key not in buf:
             raise DaosTestError("FAIL: Name does not match after list attr,"
-                                " Expected buf={0} and received buf = {1}"
-                                .format(key, buffer))
+                             " Expected buf={0} and received buf = {1}"
+                             .format(key, buf))
     print ("===== list Attr name = {0} and length = {1}"
-           .format(buffer, size))
+           .format(buf, size))
 
 def verify_get_attr(indata, outdata):
     """

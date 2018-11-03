@@ -61,16 +61,8 @@ class BadEvictTest(Test):
 
         ServerUtils.runServer(self.hostfile, server_group, self.basepath)
 
-        # pause for good luck and let things stabilize
-        time.sleep(3)
-
     def tearDown(self):
-        # right now the exception logic in stopServer is too aggresive/broken.
-        # remove this catch later on when working better
-        try:
-            ServerUtils.stopServer(hosts=self.hostlist)
-        except Exception as e:
-            pass
+        ServerUtils.stopServer(hosts=self.hostlist)
 
     def test_evict(self):
         """
@@ -157,13 +149,13 @@ class BadEvictTest(Test):
             pool.evict()
 
             if expected_result in ['FAIL']:
-                    self.fail("Test was expected to fail but it passed.\n")
+                self.fail("Test was expected to fail but it passed.\n")
 
-        except DaosApiError as e:
-            print(e)
+        except DaosApiError as excpn:
+            print(excpn)
             print(traceback.format_exc())
             if expected_result in ['PASS']:
-                    self.fail("Test was expected to pass but it failed.\n")
+                self.fail("Test was expected to pass but it failed.\n")
         finally:
             if pool is not None:
                 # if the test trashed some pool parameter, put it back the

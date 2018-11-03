@@ -45,6 +45,7 @@ class BadConnectTest(Test):
     Tests pool connect calls passing NULL and otherwise inappropriate
     parameters.  This can't be done with daosctl, need to use the python API.
 
+    :avocado: recursive
     """
 
     # start servers, establish file locations, etc.
@@ -84,24 +85,24 @@ class BadConnectTest(Test):
         """
 
         # parameters used in pool create
-        createmode = self.params.get("mode",'/run/connecttests/createmode/')
-        createuid  = self.params.get("uid",'/run/connecttests/uids/createuid/')
-        creategid  = self.params.get("gid",'/run/connecttests/gids/creategid/')
+        createmode = self.params.get("mode", '/run/connecttests/createmode/')
+        createuid = self.params.get("uid", '/run/connecttests/uids/createuid/')
+        creategid = self.params.get("gid", '/run/connecttests/gids/creategid/')
         createsetid = self.params.get("setname",
                                       '/run/connecttests/setnames/createset/')
-        createsize  = self.params.get("size",
-                                      '/run/connecttests/psize/createsize/')
+        createsize = self.params.get("size",
+                                     '/run/connecttests/psize/createsize/')
 
         # Accumulate a list of pass/fail indicators representing what is
         # expected for each parameter then "and" them to determine the
         # expected result of the test
         expected_for_param = []
 
-        modelist = self.params.get("mode",'/run/connecttests/connectmode/*/')
+        modelist = self.params.get("mode", '/run/connecttests/connectmode/*/')
         connectmode = modelist[0]
         expected_for_param.append(modelist[1])
 
-        svclist = self.params.get("ranklist",'/run/connecttests/svrlist/*/')
+        svclist = self.params.get("ranklist", '/run/connecttests/svrlist/*/')
         svc = svclist[0]
         expected_for_param.append(svclist[1])
 
@@ -110,7 +111,7 @@ class BadConnectTest(Test):
         connectset = setlist[0]
         expected_for_param.append(setlist[1])
 
-        uuidlist = self.params.get("uuid",'/run/connecttests/UUID/*/')
+        uuidlist = self.params.get("uuid", '/run/connecttests/UUID/*/')
         connectuuid = uuidlist[0]
         expected_for_param.append(uuidlist[1])
 
@@ -118,9 +119,9 @@ class BadConnectTest(Test):
         # virtually everyone should FAIL since we are testing bad parameters
         expected_result = 'PASS'
         for result in expected_for_param:
-                if result == 'FAIL':
-                      expected_result = 'FAIL'
-                      break
+            if result == 'FAIL':
+                expected_result = 'FAIL'
+                break
 
         puuid = (ctypes.c_ubyte * 16)()
         psvc = RankList()
@@ -128,13 +129,16 @@ class BadConnectTest(Test):
         pool = None
         try:
             # setup the DAOS python API
-            with open('../../../.build_vars.json') as f:
-                data = json.load(f)
-            CONTEXT = DaosContext(data['PREFIX'] + '/lib/')
+            with open('../../../.build_vars.json') as build_vars:
+                data = json.load(build_vars)
+            context = DaosContext(data['PREFIX'] + '/lib/')
 
+            # needed for the finally: in case the next assignment raises
+            # an exception
+            pool = None
             # initialize a python pool object then create the underlying
             # daos storage
-            pool = DaosPool(CONTEXT)
+            pool = DaosPool(context)
             pool.create(createmode, createuid, creategid,
                         createsize, createsetid, None)
             # save this uuid since we might trash it as part of the test
@@ -161,25 +165,25 @@ class BadConnectTest(Test):
             pool.connect(connectmode)
 
             if expected_result in ['FAIL']:
-                    self.fail("Test was expected to fail but it passed.\n")
+                self.fail("Test was expected to fail but it passed.\n")
 
-        except DaosApiError as e:
-            print(e)
+        except DaosApiError as excpn:
+            print(excpn)
             print(traceback.format_exc())
             if expected_result in ['PASS']:
-                    self.fail("Test was expected to pass but it failed.\n")
+                self.fail("Test was expected to pass but it failed.\n")
 
         # cleanup the pool
         finally:
             if pool is not None and pool.attached == 1:
-                    # restore values in case we trashed them during test
-                    pool.svc.rl_ranks = psvc.rl_ranks
-                    pool.svc.rl_nr = psvc.rl_nr
-                    pool.group = pgroup
-                    ctypes.memmove(pool.uuid, puuid, 16)
-                    print("pool uuid after restore {}".format(
-                        pool.get_uuid_str()))
-                    pool.destroy(1)
+                # restore values in case we trashed them during test
+                pool.svc.rl_ranks = psvc.rl_ranks
+                pool.svc.rl_nr = psvc.rl_nr
+                pool.group = pgroup
+                ctypes.memmove(pool.uuid, puuid, 16)
+                print("pool uuid after restore {}".format(
+                    pool.get_uuid_str()))
+                pool.destroy(1)
 
 if __name__ == "__main__":
     main()

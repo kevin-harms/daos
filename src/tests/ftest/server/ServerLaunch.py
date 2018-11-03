@@ -45,7 +45,6 @@ class ServerLaunch(Test):
                 server_count)
         launch_cmd += "--hostfile {0} --enable-recovery ".format(hostfile)
         launch_cmd += "--report-uri {0} -x D_LOG_FILE=/mnt/shared/test/tmp/daos.log ".format(urifile)
-        launch_cmd += "-x LD_LIBRARY_PATH=/home/skirvan/daos_m10/install/lib:/home/skirvan/daos_m10/install/lib/daos_srv "
         launch_cmd += "../../install/bin/daos_server -d /tmp/.daos -g daos_server"
 
         try:
