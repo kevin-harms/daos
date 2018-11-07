@@ -150,6 +150,7 @@ if __name__ == "__main__":
         print("Total test run-time in seconds: {}".format(end_time - start_time))
 
     # run only provided tagged tests.
+    print test_files
     for _file in test_files:
         if test_request == 'all':
             run_test(_file)

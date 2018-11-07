@@ -33,6 +33,7 @@ class DaosCoreTest(TestWithServers):
     #@betterSkipIf(lambda x: x.params.get("test_name", '/run/daos_tests/Tests/*') == "rebuild tests", 'Skipping 1')
     #@betterSkipIf(lambda x: x.params.get("test_name", '/run/daos_tests/Tests/*') == "IO test", 'Skipping 2')
     def setUp(self):
+        self.log.info("setUp() executed from DaosCoreTest.py")
         self.subtest_name = self.params.get("test_name", '/run/daos_tests/Tests/*')
 
         if self.subtest_name == "rebuild tests":

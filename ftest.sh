@@ -62,7 +62,8 @@ restore_dist_files "${yaml_files[@]}"
 i=5
 # due to flakiness on wolf-53, try this several times
 while [ $i -gt 0 ]; do
-    pdsh -R ssh -S -w ${HOSTPREFIX}vm[1-9] "sudo umount /mnt/daos
+    pdsh -R ssh -S -w ${HOSTPREFIX}vm[1-9] "set -x
+    sudo umount /mnt/daos
     x=0
     while [ \$x -lt 30 ] &&
           grep $DAOS_BASE /proc/mounts &&
@@ -109,6 +110,8 @@ $NFS_SERVER:$PWD $DAOS_BASE nfs defaults 0 0 # added by ftest.sh
 wq
 EOF
 sudo mount $DAOS_BASE
+df -h
+ls -l $DAOS_BASE/install/lib/libdaos.so.0.0.2
 rm -rf /tmp/Functional_$TEST_TAG/
 mkdir -p /tmp/Functional_$TEST_TAG/" 2>&1 | dshbak -c; then
     echo "Cluster setup (i.e. provisioning) failed"
