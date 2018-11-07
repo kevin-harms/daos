@@ -8,6 +8,7 @@ import json
 
 from avocado import Test as avocadoTest
 from avocado import skip
+from avocado.core.exceptions import TestSkipError
 
 import ServerUtils
 import WriteHostFile
@@ -15,6 +16,17 @@ from daos_api import DaosContext, DaosLog
 
 def skipForTicket(ticket):
     return skip("Skipping until {} is fixed.".format(ticket))
+
+def betterSkipIf(cond, message=None):
+    def decorator(function):
+        def wrapper(self, *args, **kwargs):
+            if callable(cond):
+                if cond(self):
+                    raise TestSkipError(message)
+            elif cond:
+                    raise TestSkipError(message)
+        return wrapper
+    return decorator
 
 class Test(avocadoTest):
     '''

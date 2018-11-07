@@ -1,3 +1,3 @@
-__all__ = ['Test', 'TestWithServers', 'skipForTicket']
+__all__ = ['Test', 'TestWithServers', 'skipForTicket', 'betterSkipIf']
 
-from apricot.test import Test, TestWithServers, skipForTicket
+from apricot.test import Test, TestWithServers, skipForTicket, betterSkipIf

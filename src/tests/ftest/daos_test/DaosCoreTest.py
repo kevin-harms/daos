@@ -22,7 +22,7 @@
     portions thereof marked with this legend must also reproduce the markings.
     '''
 
-from apricot       import TestWithServers, skipForTicket
+from apricot       import TestWithServers, skipForTicket, betterSkipIf
 from avocado.utils import process
 
 class DaosCoreTest(TestWithServers):
@@ -30,6 +30,8 @@ class DaosCoreTest(TestWithServers):
     Runs the daos_test subtests with multiple servers.
     :avocado: recursive
     """
+    #@betterSkipIf(lambda x: x.params.get("test_name", '/run/daos_tests/Tests/*') == "rebuild tests", 'Skipping 1')
+    #@betterSkipIf(lambda x: x.params.get("test_name", '/run/daos_tests/Tests/*') == "IO test", 'Skipping 2')
     def setUp(self):
         self.subtest_name = self.params.get("test_name", '/run/daos_tests/Tests/*')
 
