@@ -25,8 +25,7 @@
 import os
 import sys
 import json
-from avocado       import Test
-from avocado       import skip
+from apricot       import Test
 
 import ServerUtils
 import WriteHostFile

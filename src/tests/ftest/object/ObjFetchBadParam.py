@@ -27,12 +27,9 @@ import traceback
 import sys
 import json
 import logging
-from avocado import Test, main
+from apricot import Test
+from avocado import main
 
-sys.path.append('./util')
-sys.path.append('../util')
-sys.path.append('../../../utils/py')
-sys.path.append('./../../utils/py')
 
 import ServerUtils
 import WriteHostFile
@@ -42,7 +39,17 @@ class ObjFetchBadParam(Test):
     """
     Test Class Description:
     Pass an assortment of bad parameters to the daos_obj_fetch function.
+    :avocado: recursive
     """
+    def __init__(self, *args, **kwargs):
+        super(ObjFetchBadParam, self).__init__(*args, **kwargs)
+
+        self.datasize = None
+        self.dkey = None
+        self.akey = None
+        self.obj = None
+        self.epoch = None
+
     def setUp(self):
 
         self.pl = logging.getLogger("progress")

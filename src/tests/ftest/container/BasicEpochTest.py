@@ -26,12 +26,9 @@ import time
 import traceback
 import sys
 import json
-from avocado import Test, main
+from apricot import Test
+from avocado import main
 
-sys.path.append('./util')
-sys.path.append('../util')
-sys.path.append('../../../utils/py')
-sys.path.append('./../../utils/py')
 
 import ServerUtils
 import WriteHostFile
@@ -41,6 +38,7 @@ from daos_api import DaosContext, DaosPool, DaosContainer, DaosApiError
 class BasicEpochTest(Test):
     """
     A very simple test verifying the use of epochs.
+    :avocado: recursive
     """
     def setUp(self):
 

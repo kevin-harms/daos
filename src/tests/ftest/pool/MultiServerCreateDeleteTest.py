@@ -28,12 +28,11 @@ import traceback
 import sys
 import json
 
-from avocado       import Test
+from apricot       import Test
 from avocado       import main
 from avocado.utils import process
 from avocado.utils import git
 
-sys.path.append('./util')
 import ServerUtils
 import CheckForPool
 import WriteHostFile
@@ -42,7 +41,7 @@ class MultiServerCreateDeleteTest(Test):
     """
     Tests DAOS pool creation, trying both valid and invalid parameters.
 
-    :avocado: tags=pool,poolcreate,multitarget
+    :avocado: recursive
     """
 
     # super wasteful since its doing this for every variation

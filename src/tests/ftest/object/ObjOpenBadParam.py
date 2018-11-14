@@ -27,12 +27,8 @@ import traceback
 import sys
 import json
 import logging
-from avocado import Test, main, skip
-
-sys.path.append('./util')
-sys.path.append('../util')
-sys.path.append('../../../utils/py')
-sys.path.append('./../../utils/py')
+from apricot import Test
+from avocado import main, skip
 
 import ServerUtils
 import WriteHostFile
@@ -43,6 +39,8 @@ class ObjOpenBadParam(Test):
     """
     Test Class Description:
     Pass an assortment of bad parameters to the daos_obj_open function.
+
+    :avocado: recursive
     """
     def __init__(self, *args, **kwargs):
         """

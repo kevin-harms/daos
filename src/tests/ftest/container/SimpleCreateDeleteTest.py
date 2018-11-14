@@ -27,12 +27,9 @@ import time
 import traceback
 import sys
 import json
-from avocado import Test, main
+from apricot import Test
+from avocado import main
 
-sys.path.append('./util')
-sys.path.append('../util')
-sys.path.append('../../../utils/py')
-sys.path.append('./../../utils/py')
 
 import ServerUtils
 import WriteHostFile
@@ -44,7 +41,7 @@ class SimpleCreateDeleteTest(Test):
     Tests DAOS container basics including create, destroy, open, query
     and close.
 
-    :avocado: tags=container,containercreate,containerdestroy,basecont
+    :avocado: recursive
     """
     def setUp(self):
 
@@ -59,9 +56,6 @@ class SimpleCreateDeleteTest(Test):
 
         # setup the DAOS python API
         self.Context = DaosContext(build_paths['PREFIX'] + '/lib/')
-
-    def tearDown(self):
-        pass
 
     def test_container_basics(self):
         """

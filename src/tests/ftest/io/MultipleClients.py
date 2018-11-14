@@ -25,13 +25,9 @@
 import os
 import sys
 import json
-from avocado       import Test
+from apricot       import Test
 from avocado       import skip
 
-sys.path.append('./util')
-sys.path.append('../util')
-sys.path.append('../../../utils/py')
-sys.path.append('./../../utils/py')
 import ServerUtils
 import WriteHostFile
 import IorUtils
@@ -40,6 +36,7 @@ from daos_api import DaosContext, DaosPool, DaosApiError
 class MultipleClients(Test):
     """
     Test class Description: Runs IOR with multiple clients.
+    :avocado: recursive
 
     """
     def setUp(self):

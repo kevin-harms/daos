@@ -28,7 +28,6 @@ from avocado.utils import process
 class DaosCoreTest(TestWithServers):
     """
     Runs the daos_test subtests with multiple servers.
-
     :avocado: recursive
     """
     def setUp(self):
