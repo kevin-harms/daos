@@ -168,6 +168,7 @@ class TestWithServers(TestWithoutServers):
         self.hostlist = self.params.get("test_machines", '/run/hosts/*')
 
         self.hostfile = WriteHostFile.WriteHostFile(self.hostlist, self.workdir)
+        self.log.info("self.hostfile: %s", self.hostfile)
 
         # clean /mnt/daos/* on all servers
         for server in self.hostlist:
