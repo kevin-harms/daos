@@ -98,7 +98,8 @@ class Test(avocadoTest):
         # tests that want longer should set a timeout in their .yaml file
         # all tests should set a timeout and 60 seconds will enforce it
         if not self.timeout:
-            self.timeout = 60
+            self.timeout = 1800
+        self.log.info("__init__() timeout: %s", self.timeout)
 
         item_list = self._Test__logdir.split('/')
         for item_num in range(len(item_list)):
