@@ -1654,10 +1654,9 @@ class DaosContext(object):
         self.libdaos.daos_init()
         # Note: action-subject format
         self.ftable = {
-            'add-target'     : self.libdaos.daos_pool_tgt_add,
+            'add-target'     : self.libdaos.daos_pool_add_tgt,
             'close-cont'     : self.libdaos.daos_cont_close,
             'close-obj'      : self.libdaos.daos_obj_close,
-            'commit-epoch'   : self.libdaos.daos_epoch_commit,
             'connect-pool'   : self.libdaos.daos_pool_connect,
             'convert-cglobal': self.libdaos.daos_cont_global2local,
             'convert-clocal' : self.libdaos.daos_cont_local2global,
